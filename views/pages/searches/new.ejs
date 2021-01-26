@@ -5,21 +5,23 @@
 <head>
   <meta charset="utf-8">
   <title>Openshelf Book Search</title>
-  <link rel="stylesheet" href="/styles/reset.css">
-  <link rel="stylesheet" href="/styles/base.css">
-  <link rel="stylesheet" href="/styles/layout.css">
-  <link rel="stylesheet" href="/styles/modules.css">
+  <link rel="stylesheet" href="./styles/reset.css">
+  <link rel="stylesheet" href="./styles/base.css">
+  <link rel="stylesheet" href="./styles/layout.css">
+  <link rel="stylesheet" href="./styles/modules.css">
 </head>
 
 <body>
   <h1>Book Search</h1>
   <nav><a href="../">book search</a></nav>
-  <form action="/author-search" method="POST">
+  <form action="/search" method="POST">
     <fieldset>
-      <legend>Search Author</legend>
-      <label for="author">Author</label>
-      <input type="text" name="author">
-      <input type="submit" value="search-by-author">
+      <legend>Book Search</legend>
+      Author <input type="radio" name="searchType" value="author">
+      Title <input type="radio" name="searchType" value="title">
+      <label for="search">Search</label>
+      <input type="text" name="searchQuery">
+      <input type="submit" value="search">
     </fieldset>
 
   </form>
