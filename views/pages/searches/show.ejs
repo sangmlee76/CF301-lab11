@@ -5,10 +5,10 @@
 <head>
   <meta charset="utf-8">
   <title>Openshelf Book Search</title>
-  <link rel="stylesheet" href="./styles/reset.css">
-  <link rel="stylesheet" href="./styles/base.css">
-  <link rel="stylesheet" href="./styles/layout.css">
-  <link rel="stylesheet" href="./styles/modules.css">
+  <link rel="stylesheet" href="/styles/reset.css">
+  <link rel="stylesheet" href="/styles/base.css">
+  <link rel="stylesheet" href="/styles/layout.css">
+  <link rel="stylesheet" href="/styles/modules.css">
 </head>
 
 <body>
@@ -21,19 +21,25 @@
         <img src="<%= authorSearchBookData[i].image %>" alt="">
       </li>
       <li>
-        <h2><%= authorSearchBookData[i].title %></h2>
+        <h2>
+          <%= authorSearchBookData[i].title %>
+        </h2>
       </li>
       <li>
-        <h3><%= authorSearchBookData[i].author %></h3>
+        <h3>
+          <%= authorSearchBookData[i].author %>
+        </h3>
       </li>
       <li>
-        <p><%= authorSearchBookData[i].description %></p>
+        <p>
+          <%= authorSearchBookData[i].description %>
+        </p>
       </li>
 
     </ul>
-      <% } %>
+    <% } %>
 
-  </form>
+      </form>
 </body>
 
 </html>

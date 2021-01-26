@@ -8,9 +8,9 @@ require('dotenv').config();
 
 //======= Setup Application Server =====//
 const app = express();
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public')); //https://stackoverflow.com/questions/48248832/stylesheet-not-loaded-because-of-mime-type
+app.use(cors());// not needed since front and back end are on the same server
+app.use(express.urlencoded({ extended: true }));//allows us to make a search using req.body
+app.use(express.static('./public')); //https://stackoverflow.com/questions/48248832/stylesheet-not-loaded-because-of-mime-type
 app.set('view engine', 'ejs');
 
 
@@ -32,7 +32,7 @@ function authorSearch(req, res) {
   console.log(author);
   const url = `https://www.googleapis.com/books/v1/volumes?q=+inauthor:${author}&maxResults=5`;//+intitle:
   superagent.get(url).then(authorSearch => {
-    // console.log(authorSearch.body.items[0].volumeInfo);
+    // console.log(authorSearch.body.items[0].volumeInfo;
     console.log(authorSearch.body.items);
     const authorSearchBookData = authorSearch.body.items.map(bookObj => new Book(bookObj));
     res.render('./pages/searches/show.ejs', { authorSearchBookData: authorSearchBookData });
@@ -51,9 +51,10 @@ function getBookSearchForm(req, res) {
 
 function Book(bookObj) {
   this.title = bookObj.volumeInfo.title;
-  this.author = bookObj.volumeInfo.authors[0];
+  this.author = bookObj.volumeInfo.authors[0]; // add bookObj.volumeInfo.authors ? bookObj.volumeInfo.authors[0] : unknown;
+  //author.join(', ')
   this.description = bookObj.volumeInfo.description;
-  this.image = bookObj.volumeInfo.imageLinks.thumbnail //'https://i.imgur.com/J5LVHEL.jpg'; //bookObj.imageLinks.smallThumbnail;
+  this.image = bookObj.volumeInfo.imageLinks.thumbnail; // bookObj.volumeInfo.imageLinks ? bookObj.volumeInfo.imageLinks.thumbnail : https://i.imgur.com/J5LVHEL.jpg';
 
 }
 
