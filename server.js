@@ -8,23 +8,23 @@ require('dotenv').config();
 //======= Setup Application Server =====//
 const app = express();
 app.use(cors());
-app.use(express.urlencoded({extended:true}));
-app.use(express.static('/public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public')); //https://stackoverflow.com/questions/48248832/stylesheet-not-loaded-because-of-mime-type
 app.set('view engine', 'ejs');
 //======= Global Variables =======//
 const PORT = process.env.PORT || 3111;
 
 //======= Routes ======//
 app.get('/', getStarted);
-app.get('/index', getBookSearchForm);
+app.get('/searches/new', getBookSearchForm);
 
 //======= Helper Functions =====//
 function getStarted(req, res) {
   res.render('./pages/index.ejs');
 }
 
-function getBookSearchForm(req, res){
-  res.render('index.html', {root:'./public'});
+function getBookSearchForm(req, res) {
+  res.render('./pages/searches/new.ejs');
 }
 
 //======= Start Server =====//
