@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3111;
 //======= Routes ======//
 app.get('/', getStarted);
 app.get('/book-search', getBookSearchForm);
-app.post('/author-search', authorSearch);
+app.post('/author-search', authorSearch); //TODO: convention is to make app.post route name the same as app.get so this should be: '/book-search'
 
 //======= Helper Functions =====//
 function getStarted(req, res) {
@@ -28,11 +28,12 @@ function getStarted(req, res) {
 }
 
 function authorSearch(req, res) {
-  const author = req.body.author;
+  const author = req.body.author; //TODO: which 'author' is the req.body.author pointing to?
   console.log(author);
-  const url = `https://www.googleapis.com/books/v1/volumes?q=+inauthor:${author}&maxResults=1`;//+intitle:
+  const url = `https://www.googleapis.com/books/v1/volumes?q=+inauthor:${author}&maxResults=5`;//+intitle:
   superagent.get(url).then(authorSearch => {
-    console.log(authorSearch.body.items[0].volumeInfo);
+    // console.log(authorSearch.body.items[0].volumeInfo);
+    console.log(authorSearch.body.items);
     const authorSearchBookData = authorSearch.body.items.map(bookObj => new Book(bookObj));
     res.render('./pages/searches/show.ejs', { authorSearchBookData: authorSearchBookData });
   })
@@ -51,8 +52,8 @@ function getBookSearchForm(req, res) {
 function Book(bookObj) {
   this.title = bookObj.volumeInfo.title;
   this.author = bookObj.volumeInfo.authors[0];
-  this.description = bookObj.description;
-  this.image = 'https://i.imgur.com/J5LVHEL.jpg'; //bookObj.imageLinks.smallThumbnail;
+  this.description = bookObj.volumeInfo.description;
+  this.image = bookObj.volumeInfo.imageLinks.thumbnail //'https://i.imgur.com/J5LVHEL.jpg'; //bookObj.imageLinks.smallThumbnail;
 
 }
 
