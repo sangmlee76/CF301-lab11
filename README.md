@@ -10,7 +10,7 @@ Create a basic full-stack application for a book list which will include the abi
 Install npm install -s express cors esj dotenv superagent
 
 ## Architecture
-Javascript, HTML, CSS, express, ejs, cors, superagent, 
+Javascript, HTML, CSS, express, ejs, cors, superagent,
 
 ## Change Log
 <!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples:
@@ -25,7 +25,7 @@ Estimate of time needed to complete: 2 hours
 
 Start time: 3:30
 
-Finish time: _____
+Finish time: 9:50
 
-Actual time needed to complete: _____
+Actual time needed to complete: 6.5 hrs
 

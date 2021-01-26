@@ -13,25 +13,25 @@
 
 <body>
   <h1>Search Results</h1>
-  <nav><a href="/book-search">book search</a></nav>
-  <ul>
+  <!-- <nav><a href="/book-search">book search</a></nav> -->
 
-    <% for(let i=0; i < authorSearchBookData.length; i++){ %>
+  <% for(let i=0; i < authorSearchBookData.length; i++){ %>
+    <ul>
       <li>
         <img src="<%= authorSearchBookData[i].image %>" alt="">
       </li>
       <li>
-        <%= authorSearchBookData[i].title %>
+        <h2><%= authorSearchBookData[i].title %></h2>
       </li>
       <li>
-        <%= authorSearchBookData[i].author %>
+        <h3><%= authorSearchBookData[i].author %></h3>
       </li>
       <li>
-        <%= authorSearchBookData[i].description %>
+        <p><%= authorSearchBookData[i].description %></p>
       </li>
 
+    </ul>
       <% } %>
-  </ul>
 
   </form>
 </body>
