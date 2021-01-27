@@ -43,8 +43,15 @@ function bookSearch(req, res) {
   const searchType = req.body.searchType;
   const url = `https://www.googleapis.com/books/v1/volumes?q=+in${searchType}:${searchQuery}&maxResults=5`;
   superagent.get(url).then(search => {
-    //console.log(search.body.items[0].volumeInfo);
     const searchBookData = search.body.items.map(bookObj => new Book(bookObj));
+
+    const sqlQuery = 'INSERT INTO bookshelf(author, title, isbn, image_url, description) VALUES ($1, $2, $3, $4, $5)';
+
+    for(let i=0; i<searchBookData.length; i++){
+      const sqlArray = [searchBookData[i].title, searchBookData[i].author, searchBookData[i].image_url, searchBookData[i].isbn, searchBookData[i].description];
+      client.query(sqlQuery, sqlArray);
+    }
+
     res.render('./pages/searches/show.ejs', { searchBookData: searchBookData });
   })
     .catch(error => {
