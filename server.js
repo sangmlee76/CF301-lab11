@@ -11,7 +11,7 @@ const pg = require('pg');
 const app = express();
 app.use(cors());// not needed since front and back end are on the same server
 app.use(express.urlencoded({ extended: true }));//allows us to make a search using req.body
-app.use(express.static('./public')); //https://stackoverflow.com/questions/48248832/stylesheet-not-loaded-because-of-mime-type
+app.use(express.static('./public'));
 app.set('view engine', 'ejs');
 const DATABASE_URL = process.env.DATABASE_URL;
 const client = new pg.Client(DATABASE_URL);
@@ -21,23 +21,31 @@ client.on('error', (error) => console.log(error));
 //======= Global Variables =======//
 const PORT = process.env.PORT || 3111;
 
+
 //======= Routes ======//
-app.get('/', getStarted);
+
+
+app.get('/', getBooksFromDatabase);
 app.get('/book-search', getBookSearchForm);
+app.get('/books/:id', bookDetails);
 app.post('/search', bookSearch);
 
 //======= Route Callbacks =====//
-function getStarted(req, res) {
-  res.render('./pages/index.ejs');
+function getBooksFromDatabase(req, res) {
+  const sqlQuery = 'SELECT * FROM bookshelf';
+  client.query(sqlQuery).then(result => {
+    res.render('./pages/index.ejs', { book: result.rows });
+  });
 }
 
 function bookSearch(req, res) {
   const searchQuery = req.body.searchQuery;
   const searchType = req.body.searchType;
   const url = `https://www.googleapis.com/books/v1/volumes?q=+in${searchType}:${searchQuery}&maxResults=5`;
-  superagent.get(url).then(authorSearch => {
-    const authorSearchBookData = authorSearch.body.items.map(bookObj => new Book(bookObj));
-    res.render('./pages/searches/show.ejs', { authorSearchBookData: authorSearchBookData });
+  superagent.get(url).then(search => {
+    //console.log(search.body.items[0].volumeInfo);
+    const searchBookData = search.body.items.map(bookObj => new Book(bookObj));
+    res.render('./pages/searches/show.ejs', { searchBookData: searchBookData });
   })
     .catch(error => {
       res.status(500).send('Google book api failed');
@@ -48,16 +56,21 @@ function bookSearch(req, res) {
 
 function getBookSearchForm(req, res) {
   res.render('./pages/searches/new.ejs');
+}
 
+function bookDetails(req, res) {
+  res.render('./pages/books/show.ejs',);
 }
 
 //======= Helper Functions =====//
+
+
 function Book(bookObj) {
   this.title = bookObj.volumeInfo.title;
   this.author = bookObj.volumeInfo.authors ? bookObj.volumeInfo.authors.join(', ') : 'Unknown';
+  this.isbn = `${bookObj.volumeInfo.industryIdentifiers[0].type} ${bookObj.volumeInfo.industryIdentifiers[0].identifier}`;
   this.description = bookObj.volumeInfo.description;
   this.image = bookObj.volumeInfo.imageLinks ? bookObj.volumeInfo.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
-
 }
 
 //======= Start Server =====//
