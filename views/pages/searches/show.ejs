@@ -33,13 +33,13 @@
       <li>
         <%= searchBookData[i].author %>
       </li>
-      <li>
-        <%= searchBookData[i].isbn %>
-      </li>
-      <p>
-        <%= searchBookData[i].description %>
-      </p>
-      </li>
+      <form action="save-book" method="POST">
+        <input type="hidden" name="title" value="<%= searchBookData[i].title %>">
+        <input type="submit" value="save-book">
+      </form>
+      <form action="books/:<% searchBookData[i] %>" method="POST">
+        <input type="submit" value="More Details">
+      </form>
 
     </ul>
     <% } %>

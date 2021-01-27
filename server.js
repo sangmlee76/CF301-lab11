@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3111;
 
 
 app.get('/', getBooksFromDatabase);
-app.get('/book-search', getBookSearchForm);
+app.get('/books', getBookSearchForm);
 app.get('/books/:id', bookDetails);
 app.post('/search', bookSearch);
 
@@ -59,7 +59,7 @@ function getBookSearchForm(req, res) {
 }
 
 function bookDetails(req, res) {
-  res.render('./pages/books/show.ejs',);
+  res.render('./pages/books/show.ejs');
 }
 
 //======= Helper Functions =====//
