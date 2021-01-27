@@ -2,14 +2,14 @@
 
 //======= Create server =========//
 const express = require('express');
-const cors = require('cors');
+//const cors = require('cors');
 const superagent = require('superagent');
 require('dotenv').config();
 const pg = require('pg');
 
 //======= Setup Application Server =====//
 const app = express();
-app.use(cors());// not needed since front and back end are on the same server
+//app.use(cors());// not needed since front and back end are on the same server
 app.use(express.urlencoded({ extended: true }));//allows us to make a search using req.body
 app.use(express.static('./public'));
 app.set('view engine', 'ejs');
@@ -31,10 +31,12 @@ app.get('/books/:id', bookDetails);
 app.post('/search', bookSearch);
 
 //======= Route Callbacks =====//
+//const sqlQuery = 'INSERT INTO bookshelf(title) VALUES ($1) RETURNING ID';
+
 function getBooksFromDatabase(req, res) {
   const sqlQuery = 'SELECT * FROM bookshelf';
   client.query(sqlQuery).then(result => {
-    res.render('./pages/index.ejs', { book: result.rows });
+    res.render('./pages/index.ejs', { book: result.rows });//assign result.rows to a varible so it stays the same everytime we need key: value pair.
   });
 }
 
@@ -47,7 +49,7 @@ function bookSearch(req, res) {
 
     const sqlQuery = 'INSERT INTO bookshelf(author, title, isbn, image_url, description) VALUES ($1, $2, $3, $4, $5)';
 
-    for(let i=0; i<searchBookData.length; i++){
+    for (let i = 0; i < searchBookData.length; i++) {
       const sqlArray = [searchBookData[i].title, searchBookData[i].author, searchBookData[i].image_url, searchBookData[i].isbn, searchBookData[i].description];
       client.query(sqlQuery, sqlArray);
     }
