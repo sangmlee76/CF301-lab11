@@ -37,7 +37,7 @@
         <input type="hidden" name="title" value="<%= searchBookData[i].title %>">
         <input type="submit" value="save-book">
       </form>
-      <form action="books/:<% searchBookData[i] %>" method="POST">
+      <form action="books/:id=<%=searchBookData[i].id %>" method="POST">
         <input type="submit" value="More Details">
       </form>
 
