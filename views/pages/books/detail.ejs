@@ -1,7 +1,6 @@
 <%- include('../../layout/head.ejs') %>
 
-<section>
-
+  <body>
 
     <ul>
       <li>
@@ -20,15 +19,18 @@
       <li>
         <%= book.isbn %>
       </li>
-      <p>
-        <%= book.description %>
-      </p>
+      <li>
+        <p>
+          <%= book.description %>
+        </p>
       </li>
+      <div id="button">Edit Details</div>
 
       <%- include('../../layout/edit.ejs', {book}) %>
-
+        <%- include('../../layout/delete.ejs', {book}) %>
     </ul>
 
+    <script src="../../../js/app.js"></script>
+  </body>
 
-
-</section>
+  </html>
