@@ -29,12 +29,13 @@ app.post('/books', saveBook);
 app.get('/books/:id', bookDetails);
 app.post('/search', bookSearch);
 app.put('/books/:id', updateBookDetails);
+app.delete('/books/:id', deleteBook);
 
 //======= Route Callbacks =====//
 function getBooksFromDatabase(req, res) {
   const sqlQuery = 'SELECT * FROM bookshelf';
   client.query(sqlQuery).then(result => {
-    const books = result.rows
+    const books = result.rows;
     res.render('./pages/index.ejs', { book: books });//assign result.rows to a varible so it stays the same everytime we need key: value pair.
   });
 }
@@ -45,14 +46,11 @@ function bookSearch(req, res) {
   const url = `https://www.googleapis.com/books/v1/volumes?q=+in${searchType}:${searchQuery}&maxResults=5`;
   superagent.get(url).then(search => {
     const searchBookData = search.body.items.map(bookObj => new Book(bookObj));
-
-
     res.render('./pages/searches/show.ejs', { searchBookData: searchBookData });
   })
     .catch(error => {
       res.status(500).send('Google book api failed');
       console.log(error.message);
-
     });
 }
 
@@ -60,17 +58,21 @@ function getBookSearchForm(req, res) {
   res.render('./pages/searches/new.ejs');
 }
 
-function saveBook(req, res){
+function saveBook(req, res) {
 
   const sqlQuery = 'INSERT INTO bookshelf(author, title, isbn, image, description) VALUES ($1, $2, $3, $4, $5) RETURNING ID';
   const sqlArray = [req.body.author, req.body.title, req.body.isbn, req.body.image, req.body.description];
   // console.log('****** REQ DOT BODY*****', req.body);
   client.query(sqlQuery, sqlArray)
-  .then(result => {
+    .then(result => {
       const books = result.rows;
       const id = books[0].id;
       res.redirect(`/books/${id}`);
     })
+    .catch(error => {
+      res.status(500).send('Failed to save book');
+      console.log(error.message);
+    });
 
 }
 
@@ -81,25 +83,42 @@ function bookDetails(req, res) {
   client.query(sqlQuery, sqlArray)
     .then(result => {
       const book = result.rows[0];
-      res.render('./pages/books/detail.ejs', { book: book});
+      res.render('./pages/books/detail.ejs', { book: book });
+    })
+    .catch(error => {
+      res.status(500).send('Failed get book details');
+      console.log(error.message);
     });
 
 }
 
-function updateBookDetails(req, res){
+function updateBookDetails(req, res) {
   const sqlQuery = 'UPDATE bookshelf SET author=$1, title=$2, isbn=$3, image=$4, description=$5 WHERE id=$6;';
   const sqlArray = [req.body.author, req.body.title, req.body.isbn, req.body.image, req.body.description, req.params.id];
-  console.log('**** params:', req.params)
-  console.log('**** query:',req.query)
-  console.log('**** body:', req.body)
   client.query(sqlQuery, sqlArray)
-    .then(()=> {
-      res.redirect(`/books/${req.params.id}`);  //TODO: check this to make sure this is okay
+    .then(() => {
+      res.redirect(`/books/${req.params.id}`);
     })
+    .catch(error => {
+      res.status(500).send('Failed to update book.');
+      console.log(error.message);
+    });
+}
+
+function deleteBook(req, res) {
+  const sqlQuery = 'DELETE FROM bookshelf WHERE id=$1;';
+  const sqlArray = [req.params.id];
+  client.query(sqlQuery, sqlArray)
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(error => {
+      res.status(500).send('Failed to delete book.');
+      console.log(error.message);
+    });
 }
 
 //======= Helper Functions =====//
-
 
 function Book(bookObj) {
   this.title = bookObj.volumeInfo.title;

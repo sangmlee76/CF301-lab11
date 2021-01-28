@@ -1,12 +1,13 @@
 <%- include('../layout/head.ejs') %>
 
-<body>
-  <h1>You have <%= book.length %> on your Book Shelf.</h1>
-  <nav><a href="/books">Book Search</a></nav>
-  <% book.forEach(book => { %>
-    <%- include('../layout/index-loop.ejs', {book}) %>
-  <% }); %>
+  <body>
+    <h1>You have <%= book.length %> on your Book Shelf.</h1>
+    <nav><a href="/books">Book Search</a></nav>
+    <% book.forEach(book=> { %>
+      <%- include('../layout/index-loop.ejs', {book}) %>
+        <% }); %>
 
-</body>
 
-</html>
+  </body>
+
+  </html>

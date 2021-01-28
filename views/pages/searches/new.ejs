@@ -1,19 +1,19 @@
 <%- include('../../layout/head.ejs') %>
 
-<body>
-  <h1>Book Search</h1>
-  <nav><a href="../">book search</a></nav>
-  <form action="/search" method="POST">
-    <fieldset>
-      <legend>Book Search</legend>
-      Author <input type="radio" name="searchType" value="author">
-      Title <input type="radio" name="searchType" value="title">
-      <label for="search">Search</label>
-      <input type="text" name="searchQuery">
-      <input type="submit" value="search">
-    </fieldset>
+  <body>
+    <h1>Book Search</h1>
+    <nav><a href="../">book search</a></nav>
+    <form action="/search" method="POST">
+      <fieldset>
+        <legend>Book Search</legend>
+        Author <input type="radio" name="searchType" value="author">
+        Title <input type="radio" name="searchType" value="title">
+        <label for="search">Search</label>
+        <input type="text" name="searchQuery">
+        <input class="form-button" type="submit" value="search">
+      </fieldset>
 
-  </form>
-</body>
+    </form>
+  </body>
 
-</html>
+  </html>
