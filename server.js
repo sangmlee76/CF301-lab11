@@ -2,14 +2,14 @@
 
 //======= Create server =========//
 const express = require('express');
-//const cors = require('cors');
 const superagent = require('superagent');
 require('dotenv').config();
 const pg = require('pg');
+const methodOverride = require('method-override');
 
 //======= Setup Application Server =====//
 const app = express();
-//app.use(cors());// not needed since front and back end are on the same server
+app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));//allows us to make a search using req.body
 app.use(express.static('./public'));
 app.set('view engine', 'ejs');
@@ -23,20 +23,19 @@ const PORT = process.env.PORT || 3111;
 
 
 //======= Routes ======//
-
-
 app.get('/', getBooksFromDatabase);
 app.get('/books', getBookSearchForm);
+app.post('/books', saveBook);
 app.get('/books/:id', bookDetails);
 app.post('/search', bookSearch);
+app.put('/books/:id', updateBookDetails);
 
 //======= Route Callbacks =====//
-//const sqlQuery = 'INSERT INTO bookshelf(title) VALUES ($1) RETURNING ID';
-
 function getBooksFromDatabase(req, res) {
   const sqlQuery = 'SELECT * FROM bookshelf';
   client.query(sqlQuery).then(result => {
-    res.render('./pages/index.ejs', { book: result.rows });//assign result.rows to a varible so it stays the same everytime we need key: value pair.
+    const books = result.rows
+    res.render('./pages/index.ejs', { book: books });//assign result.rows to a varible so it stays the same everytime we need key: value pair.
   });
 }
 
@@ -47,12 +46,6 @@ function bookSearch(req, res) {
   superagent.get(url).then(search => {
     const searchBookData = search.body.items.map(bookObj => new Book(bookObj));
 
-    const sqlQuery = 'INSERT INTO bookshelf(author, title, isbn, image_url, description) VALUES ($1, $2, $3, $4, $5)';
-
-    for (let i = 0; i < searchBookData.length; i++) {
-      const sqlArray = [searchBookData[i].title, searchBookData[i].author, searchBookData[i].image_url, searchBookData[i].isbn, searchBookData[i].description];
-      client.query(sqlQuery, sqlArray);
-    }
 
     res.render('./pages/searches/show.ejs', { searchBookData: searchBookData });
   })
@@ -67,8 +60,42 @@ function getBookSearchForm(req, res) {
   res.render('./pages/searches/new.ejs');
 }
 
+function saveBook(req, res){
+
+  const sqlQuery = 'INSERT INTO bookshelf(author, title, isbn, image, description) VALUES ($1, $2, $3, $4, $5) RETURNING ID';
+  const sqlArray = [req.body.author, req.body.title, req.body.isbn, req.body.image, req.body.description];
+  // console.log('****** REQ DOT BODY*****', req.body);
+  client.query(sqlQuery, sqlArray)
+  .then(result => {
+      const books = result.rows;
+      const id = books[0].id;
+      res.redirect(`/books/${id}`);
+    })
+
+}
+
 function bookDetails(req, res) {
-  res.render('./pages/books/show.ejs');
+  const sqlQuery = 'SELECT * FROM bookshelf WHERE id = $1;';
+  const sqlArray = [req.params.id];
+
+  client.query(sqlQuery, sqlArray)
+    .then(result => {
+      const book = result.rows[0];
+      res.render('./pages/books/detail.ejs', { book: book});
+    });
+
+}
+
+function updateBookDetails(req, res){
+  const sqlQuery = 'UPDATE bookshelf SET author=$1, title=$2, isbn=$3, image=$4, description=$5 WHERE id=$6;';
+  const sqlArray = [req.body.author, req.body.title, req.body.isbn, req.body.image, req.body.description, req.params.id];
+  console.log('**** params:', req.params)
+  console.log('**** query:',req.query)
+  console.log('**** body:', req.body)
+  client.query(sqlQuery, sqlArray)
+    .then(()=> {
+      res.redirect(`/books/${req.params.id}`);  //TODO: check this to make sure this is okay
+    })
 }
 
 //======= Helper Functions =====//
@@ -84,5 +111,5 @@ function Book(bookObj) {
 
 //======= Start Server =====//
 client.connect().then(() => {
-  app.listen(PORT, console.log(`We are here on ${PORT}!`));
+  app.listen(PORT, console.log(`We are here on ${PORT}`));
 }).catch(error => console.error(error)); //this catch is redundant, should NEVER happen

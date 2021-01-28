@@ -1,6 +1,3 @@
-<%- include('../../layout/head.ejs') %>
-
-<section>
 
 
     <ul>
@@ -20,15 +17,12 @@
       <li>
         <%= book.isbn %>
       </li>
-      <p>
-        <%= book.description %>
-      </p>
+      <li>
+        <p>
+          <%= book.description %>
+        </p>
       </li>
-
-      <%- include('../../layout/edit.ejs', {book}) %>
-
+      <a href="books/<%= book.id %>">
+        <div>More Details</div>
+      </a>
     </ul>
-
-
-
-</section>

@@ -1,48 +1,45 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <title>Openshelf Book Search</title>
-  <link rel="stylesheet" href="/styles/reset.css">
-  <link rel="stylesheet" href="/styles/base.css">
-  <link rel="stylesheet" href="/styles/layout.css">
-  <link rel="stylesheet" href="/styles/modules.css">
-</head>
+<%- include('../../layout/head.ejs') %>
 
 <body>
   <h1>Search Results</h1>
   <!-- <nav><a href="/book-search">book search</a></nav> -->
 
   <% for(let i=0; i < searchBookData.length; i++){ %>
-    <ul>
-      <li>
-        <img src="<%= searchBookData[i].image %>" alt="">
-      </li>
-      <li>
-        <h2>
-          <%= searchBookData[i].title %>
-        </h2>
-      </li>
-      <li>
-        <h3>
-          <%= searchBookData[i].author %>
-        </h3>
-      </li>
-      <li>
+  <ul>
+    <li>
+      <img src="<%= searchBookData[i].image %>" alt="">
+    </li>
+    <li>
+      <h2>
+        <%= searchBookData[i].title %>
+      </h2>
+    </li>
+    <li>
+      <h3>
         <%= searchBookData[i].author %>
-      </li>
-      <form action="save-book" method="POST">
-        <input type="hidden" name="title" value="<%= searchBookData[i].title %>">
-        <input type="submit" value="save-book">
-      </form>
-      <form action="books/:id=<%=searchBookData[i].id %>" method="POST">
-        <input type="submit" value="More Details">
-      </form>
+      </h3>
+    </li>
+    <li>
+        <%= searchBookData[i].isbn %>
+    </li>
+    <li>
+      <p>
+        <%= searchBookData[i].description %>
+      </p>
+    </li>
 
-    </ul>
-    <% } %>
+    <form action="/books" method="POST">
+      <input type="hidden" name="title" value="<%= searchBookData[i].title %>">
+      <input type="hidden" name="author" value="<%= searchBookData[i].author %>">
+      <input type="hidden" name="isbn" value="<%= searchBookData[i].isbn %>">
+      <input type="hidden" name="image" value="<%= searchBookData[i].image %>">
+      <input type="hidden" name="description" value="<%= searchBookData[i].description %>">
+      <input type="submit" value="Save Book">
+    </form>
+
+
+  </ul>
+  <% } %>
 </body>
 
 </html>
